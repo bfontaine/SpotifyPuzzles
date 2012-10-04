@@ -1,6 +1,4 @@
 import java.util.Scanner;
-import java.util.List;
-import java.util.LinkedList;
 
 /* Simple class to represent basic dates (day/month/year),
  * easier to manipulate than 3-integers arrays.
@@ -11,36 +9,47 @@ class BasicDate {
     public int y;
 
     public BasicDate(int _d, int _m, int _y) {
-        d = _d;
-        m = _m;
-        y = _y;
+        this.update(_d, _m, _y);
     }
 
-    public boolean isEarlierThan(BasicDate other) {
-        if (this.y > other.y)
+    // earlier than or equals to
+    public boolean isEarlierThan(int _d, int _m, int _y) {
+        if (this.y > _y)
             return false;
 
-        if (this.m > other.m)
+        if (this.m > _m)
             return false;
 
-        return (this.d < other.d);
+        return (this.d <= _d);
+    }
+
+    public void update(int _d, int _m, int _y) {
+        d = _d;
+        m = _m;
+        y = BestBefore.toFourDigitsYear(_y);
+    }
+
+    public String toString() {
+        String d_string = (d < 10) ? "0"+d : ""+d,
+               m_string = (m < 10) ? "0"+m : ""+m,
+
+               y_string = (y < 100)
+                            ? (y < 10)
+                                ? "200"+y
+                                : "20"+y
+                            : ""+y;
+
+
+        return y_string+"-"+m_string+"-"+d_string;
     }
 }
 
 public class BestBefore {
 
-    private static Scanner sc = null;
+    private static Scanner sc = new Scanner(System.in);
 
     public static void main (String[] args) {
-        System.out.println(bestBefore(readInput()));
-    }
-
-    public static String readInput() {
-        if (sc == null) {
-            sc = new Scanner(System.in);
-        }
-
-        return sc.nextLine();
+        System.out.println(bestBefore(sc.nextLine()));
     }
 
     public static int[] splitDate(String date) {
@@ -57,12 +66,12 @@ public class BestBefore {
     // (higher than, or equal to 2000)
     public static boolean canBeAYear(int y) {
         return (   (y >= 2000 && y < 3000)
-                || (y >= 0    && y < 1000));
+                || (y >= 0    && y < 100));
     }
 
     // return true if `y` is a leap year
     public static boolean isALeapYear(int y) {
-        // isALeapYear(Y) == isALeapYear(Y+2000) // if Y < 1000,
+        // isALeapYear(Y) == isALeapYear(Y+2000) for Y < 1000,
         // so we don't have to call toFourDigitsYear(y) before
         // doing the test
         return ((y%4 == 0 && y%100 != 0 ) || y%400 == 0);
@@ -101,9 +110,10 @@ public class BestBefore {
     // return true if `d` can be a day, given the month (`m`)
     // and the year (`y`)
     public static boolean canBeADay(int d, int m, int y) {
-        return (   canBeAMonth(m)
+        // quicker tests first
+        return (   d > 0
+                && canBeAMonth(m)
                 && canBeAYear(y)
-                && d > 0
                 && d <= getDaysNumber(m, y));
     }
 
@@ -128,47 +138,41 @@ public class BestBefore {
         return y_string+"-"+m_string+"-"+d_string;
     }
 
-    public static BasicDate getEarliestDate(LinkedList<BasicDate> dates) {
-
-        BasicDate earliest = dates.pop();
-
-        for (BasicDate d : dates) {
-            if (d.isEarlierThan(earliest))
-                earliest = d;
-        }
-
-        return earliest;
-    }
-
     // see http://www.spotify.com/fr/jobs/tech/best-before/
     public static String bestBefore(String input) {
 
         int[] numbers = splitDate(input);
 
-        LinkedList<BasicDate> possibilities = new LinkedList<BasicDate>();
+        BasicDate earliest = null;
 
         for (int i=0, d, m, y; i<3; i++) {
 
-            d = numbers[i];       // day (or year, if it cannot be a day)
-            m = numbers[(i+1)%3]; // month
-            y = numbers[(i+2)%3]; // year (or day, if it cannot be a year)
-
+            d = numbers[i];       // day
+            m = numbers[(i+1)%3]; // month (or year, if it cannot be a month)
+            y = numbers[(i+2)%3]; // year (or month, if it cannot be a year)
 
             // we need to store each possibility to check later
             // which date is the earliest one
 
             if (canBeADay(d, m, y)) {
-                possibilities.push(new BasicDate(d,m,y));
+                if (earliest == null) {
+                    earliest = new BasicDate(d, m, y);
+                }
+                else if (!earliest.isEarlierThan(d, m, y)) {
+                    earliest.update(d, m, y);
+                }
             }
 
-            if (canBeADay(y, m, d)) {
-                possibilities.push(new BasicDate(y,m,d));
+            if (canBeADay(d, y, m)) {
+                if (earliest == null) {
+                    earliest = new BasicDate(d, y, m);
+                }
+                else if (!earliest.isEarlierThan(d, y, m)) {
+                    earliest.update(d, y, m);
+                }
             }
         }
 
-        if (possibilities.isEmpty())
-            return input+" is illegal";
-
-        return format(getEarliestDate(possibilities));
+        return (earliest == null) ? input+" is illegal" : earliest.toString();
     }
 }
