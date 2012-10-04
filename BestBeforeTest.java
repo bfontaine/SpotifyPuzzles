@@ -113,6 +113,14 @@ public class BestBeforeTest {
     }
 
     @Test
+    public void testBestBeforeLeapYears() {
+        assertEquals("2000-02-29", BestBefore.bestBefore("29/2/0"));
+        assertEquals("2002-04-29", BestBefore.bestBefore("2/04/29"));
+
+        assertEquals("29/2005/2 is illegal", BestBefore.bestBefore("29/2005/2"));
+    }
+
+    @Test
     public void testBestBeforeGoodDate() {
         assertEquals("2067-02-04", BestBefore.bestBefore("02/4/67"));
     }
