@@ -53,10 +53,10 @@ public class BestBeforeTest {
 
     @Test
     public void testToFourDigitsYear() {
-        assertEquals(2000, BestBefore.toFourDigitsYear(0));
-        assertEquals(2001, BestBefore.toFourDigitsYear(1));
-        assertEquals(2042, BestBefore.toFourDigitsYear(42));
-        assertEquals(2043, BestBefore.toFourDigitsYear(2043));
+        assertEquals(2000, BasicDate.toFourDigitsYear(0));
+        assertEquals(2001, BasicDate.toFourDigitsYear(1));
+        assertEquals(2042, BasicDate.toFourDigitsYear(42));
+        assertEquals(2043, BasicDate.toFourDigitsYear(2043));
     }
 
     @Test
@@ -105,11 +105,14 @@ public class BestBeforeTest {
     public void testBestBeforeNoPossibleMonth() {
         assertEquals("31/0/73 is illegal", BestBefore.bestBefore("31/0/73"));
         assertEquals("31/13/73 is illegal", BestBefore.bestBefore("31/13/73"));
+        assertEquals("20/20/20 is illegal", BestBefore.bestBefore("20/20/20"));
     }
 
     @Test
     public void testBestBeforeNoPossibleDay() {
         assertEquals("31/9/73 is illegal", BestBefore.bestBefore("31/9/73"));
+        assertEquals("32/7/73 is illegal", BestBefore.bestBefore("32/7/73"));
+        assertEquals("30/2002/02 is illegal", BestBefore.bestBefore("30/2002/02"));
     }
 
     @Test
@@ -121,7 +124,32 @@ public class BestBeforeTest {
     }
 
     @Test
+    public void testIsEarlier() {
+        BasicDate bd = new BasicDate(20, 9, 2009);
+
+        assertTrue(bd.isEarlierThan(21,  9, 2009));
+        assertTrue(bd.isEarlierThan( 5, 10, 2009));
+        assertTrue(bd.isEarlierThan( 1,  1, 2010));
+
+        assertFalse(bd.isEarlierThan(19,  9, 2009));
+        assertFalse(bd.isEarlierThan(21,  8, 2009));
+        assertFalse(bd.isEarlierThan(21, 10, 2008));
+    }
+
+    @Test
+    public void testBasicDateToString() {
+        assertEquals("2067-02-04", new BasicDate(4, 2, 67).toString());
+        assertEquals("2067-02-04", new BasicDate(4, 2, 2067).toString());
+
+        assertEquals("2000-02-04", new BasicDate(4, 2, 2000).toString());
+        assertEquals("2000-02-04", new BasicDate(4, 2, 0).toString());
+    }
+
+    @Test
     public void testBestBeforeGoodDate() {
         assertEquals("2067-02-04", BestBefore.bestBefore("02/4/67"));
+        assertEquals("2001-02-03", BestBefore.bestBefore("3/2/1"));
+        assertEquals("2010-10-10", BestBefore.bestBefore("10/10/10"));
+        assertEquals("2030-02-02", BestBefore.bestBefore("30/2/02"));
     }
 }
