@@ -14,8 +14,16 @@ class BasicDate {
 
     // earlier than or equals to
     public boolean isEarlierThan(int _d, int _m, int _y) {
+        _y = toFourDigitsYear(_y);
+
+        if (this.y < _y)
+            return true;
+
         if (this.y > _y)
             return false;
+
+        if (this.m < _m)
+            return true;
 
         if (this.m > _m)
             return false;
@@ -26,7 +34,7 @@ class BasicDate {
     public void update(int _d, int _m, int _y) {
         d = _d;
         m = _m;
-        y = BestBefore.toFourDigitsYear(_y);
+        y = toFourDigitsYear(_y);
     }
 
     public String toString() {
@@ -41,6 +49,12 @@ class BasicDate {
 
 
         return y_string+"-"+m_string+"-"+d_string;
+    }
+
+    // return the year `y` with four digits
+    // (we assume that the year is correct)
+    public static int toFourDigitsYear(int y) {
+        return (y < 100) ? 2000+y : y;
     }
 }
 
@@ -72,15 +86,9 @@ public class BestBefore {
     // return true if `y` is a leap year
     public static boolean isALeapYear(int y) {
         // isALeapYear(Y) == isALeapYear(Y+2000) for Y < 1000,
-        // so we don't have to call toFourDigitsYear(y) before
+        // so we don't have to call BasicDate.toFourDigitsYear(y) before
         // doing the test
         return ((y%4 == 0 && y%100 != 0 ) || y%400 == 0);
-    }
-
-    // return the year `y` with four digits
-    // (we assume that the year is correct)
-    public static int toFourDigitsYear(int y) {
-        return (y < 100) ? 2000+y : y;
     }
 
     // return the number of days of the month `m`, given
@@ -115,27 +123,6 @@ public class BestBefore {
                 && canBeAMonth(m)
                 && canBeAYear(y)
                 && d <= getDaysNumber(m, y));
-    }
-
-    // format a date for output
-    public static String format(BasicDate date) {
-
-        // shortcuts
-        int d = date.d,
-            m = date.m,
-            y = date.y;
-
-        String d_string = (d < 10)  ?  "0"+d : ""+d,
-               m_string = (m < 10)  ?  "0"+m : ""+m,
-
-               y_string = (y < 100)
-                            ? (y < 10)
-                                ? "200"+y
-                                : "20"+y
-                            : ""+y;
-
-
-        return y_string+"-"+m_string+"-"+d_string;
     }
 
     // see http://www.spotify.com/fr/jobs/tech/best-before/
