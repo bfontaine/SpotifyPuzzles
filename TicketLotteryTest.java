@@ -6,6 +6,20 @@ import static org.junit.Assert.assertFalse;
 public class TicketLotteryTest {
 
     @Test
+    public void testOnePeopleOneWinner() {
+        String input = "1 1 1 1";
+
+        assertEquals("1", TicketLottery.getProbabilities(input));
+    }
+
+    @Test
+    public void testTwoPeopleOneTicketOneWinner() {
+        String input = "1 1 1 2";
+
+        assertEquals("0", TicketLottery.getProbabilities(input));
+    }
+
+    @Test
     public void testSampleInput1() {
         String input = "100 10 2 1";
 
