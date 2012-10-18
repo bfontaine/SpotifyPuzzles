@@ -23,9 +23,9 @@ class TicketLottery {
         if (!enoughTickets(winners, tickets_per_winner, group_size))
             return "0";
 
-        int winners_needed = (int)Math.ceil(group_size/tickets_per_winner);
+        int needed_winners = (int)Math.ceil(group_size/tickets_per_winner);
 
-        if (winners_needed > winners)
+        if (needed_winners > winners)
             return "0";
 
         return "";
