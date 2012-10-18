@@ -12,7 +12,12 @@ class TicketLottery {
 
         int[] numbers = splitNumbers(input);
 
-        if (!enoughTickets(numbers))
+        int lottery_people     = numbers[0],
+            winners            = numbers[1],
+            tickets_per_winner = numbers[2],
+            group_size         = numbers[3];
+
+        if (!enoughTickets(winners, tickets_per_winner, group_size))
             return "0";
 
         return "";
@@ -31,8 +36,9 @@ class TicketLottery {
 
     // test if it’s possible to win enough tickets
     // for the whole group
-    private static boolean enoughTickets(int[] numbers) {
-        // number of winners * number of tickets per winner >= |group|
-        return (numbers[1]*numbers[2] >= numbers[3]);
+    private static boolean enoughTickets(int winners,
+                                int tickets_per_winner, int group_size) {
+
+        return (winners*tickets_per_winner >= group_size);
     }
 }
