@@ -10,7 +10,7 @@ class TicketLottery {
 
     public static String getProbabilities(String input) {
 
-        double[] numbers = splitNumbers(input);
+        int[] numbers = splitNumbers(input);
 
         /* m : total # of people
          * n : # of winners
@@ -36,10 +36,10 @@ class TicketLottery {
         return "";
     }
 
-    private static double[] splitNumbers(String input) {
+    private static int[] splitNumbers(String input) {
         String[] parts = input.split(" ");
 
-        return new double[] {
+        return new int[] {
             Integer.parseInt(parts[0]),
             Integer.parseInt(parts[1]),
             Integer.parseInt(parts[2]),
