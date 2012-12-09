@@ -14,7 +14,7 @@ public class TicketLotteryTest {
 
     @Test
     public void testTwoPeopleOneTicketOneWinner() {
-        String input = "1 1 1 2";
+        String input = "2 1 1 2";
 
         assertEquals("0", TicketLottery.getProbabilities(input));
     }
