@@ -12,21 +12,26 @@ class TicketLottery {
 
         double[] numbers = splitNumbers(input);
 
-        double lottery_people     = numbers[0],
-               winners            = numbers[1],
-               tickets_per_winner = numbers[2],
-               group_size         = numbers[3];
+        /* m : total # of people
+         * n : # of winners
+         * t : # tickets per winners
+         * p : people in the team
+         */
 
-        if (lottery_people == winners)
-            return "1";
+        int m = numbers[0],
+            n = numbers[1],
+            t = numbers[2],
+            p = numbers[3];
 
-        if (!enoughTickets(winners, tickets_per_winner, group_size))
-            return "0";
+        if (m == n) return "1";
 
-        int needed_winners = (int)Math.ceil(group_size/tickets_per_winner);
+        // not enough tickets
+        if (t*n < p) return "0";
 
-        if (needed_winners > winners)
-            return "0";
+        // needed # of winners
+        int w = p / t + 1;
+
+        if (w > n) return "0";
 
         return "";
     }
@@ -40,13 +45,5 @@ class TicketLottery {
             Integer.parseInt(parts[2]),
             Integer.parseInt(parts[3])
         };
-    }
-
-    // test if it’s possible to win enough tickets
-    // for the whole group
-    private static boolean enoughTickets(double winners,
-                                double tickets_per_winner, double group_size) {
-
-        return (winners*tickets_per_winner >= group_size);
     }
 }
