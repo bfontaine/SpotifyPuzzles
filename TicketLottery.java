@@ -14,7 +14,7 @@ class TicketLottery {
     public static String getProbabilities(String input) {
 
         DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(9);
+        df.setMaximumFractionDigits(10);
         df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
 
         int[] numbers = splitNumbers(input);
@@ -34,6 +34,7 @@ class TicketLottery {
         int w = (int)Math.ceil(p / (t + 0.0));
 
         if (m == n) return "1";
+        if (w  > n) return "0";
 
         return df.format(getProbability(m, n, w, p));
     }
@@ -41,10 +42,8 @@ class TicketLottery {
     private static double getProbability(int m, int n, int w, int p) {
 
         if ( n == 0 ) {
-            return p == 0 ? 1 : 0;
+            return w <= 0 ? 1 : 0;
         }
-
-        if (w  > n) return 0;
 
         return        p  / (m + 0.0) * getProbability(m-1, n-1, w-1, p-1)
                + (m - p) / (m + 0.0) * getProbability(m-1, n-1, w  , p  );
