@@ -1,4 +1,7 @@
 import java.util.Scanner;
+import java.util.Locale;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 class TicketLottery {
 
@@ -9,6 +12,10 @@ class TicketLottery {
     }
 
     public static String getProbabilities(String input) {
+
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(9);
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
 
         int[] numbers = splitNumbers(input);
 
@@ -23,17 +30,25 @@ class TicketLottery {
             t = numbers[2],
             p = numbers[3];
 
+        // needed # of winners
+        int w = (int)Math.ceil(p / (t + 0.0));
+
         if (m == n) return "1";
 
-        // not enough tickets
-        if (t*n < p) return "0";
+        return df.format(getProbability(m, n, w, p));
+    }
 
-        // needed # of winners
-        int w = p / t + 1;
+    private static double getProbability(int m, int n, int w, int p) {
 
-        if (w > n) return "0";
+        if ( n == 0 ) {
+            return p == 0 ? 1 : 0;
+        }
 
-        return "";
+        if (w  > n) return 0;
+
+        return        p  / (m + 0.0) * getProbability(m-1, n-1, w-1, p-1)
+               + (m - p) / (m + 0.0) * getProbability(m-1, n-1, w  , p  );
+
     }
 
     private static int[] splitNumbers(String input) {
